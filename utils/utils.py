@@ -257,7 +257,9 @@ def highlight_max(row):
     return ['background-color: #F4F410' if v else '' for v in is_max]
 
 def highlight_min(row):
-    is_min = row == row.min()
-    if not 0 in row.values:
-        return ['background-color: #90EE90' if v else '' for v in is_min]
+    is_min = row == row[row!=0].min()
+    return ['background-color: #90EE90' if v else '' for v in is_min]
+
+def highlight_timeout(row):
+    is_min = row == row[row==0].min()
     return ['background-color: #F08080' if v else '' for v in is_min]
