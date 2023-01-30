@@ -23,7 +23,6 @@ array[RECTANGLES] of var 0..max(max_h, w): x_components_rot; % store the x compo
 array[RECTANGLES] of var 0..max(max_h, w): y_components_rot;
 array[RECTANGLES] of var bool: rotations; % [false false true ...] --> a list of BOOL that indicates: true the rectangles is rotated, false otherwise
 constraint forall (i in RECTANGLES) (if rotations[i] then y_components_rot[i] == x_components[i] /\ x_components_rot[i] == y_components[i] else x_components_rot[i] == x_components[i] /\ y_components_rot[i] == y_components[i] endif);
-constraint forall (i in RECTANGLES) (if x_components[i] == y_components[i] then rotations[i]==false else true endif);
 
 % CONSTRAINTS
 constraint cumulative(y_positions, y_components_rot, x_components_rot, w); % cumulative
@@ -31,10 +30,7 @@ constraint cumulative(x_positions, x_components_rot, y_components_rot, h); % cum
 constraint diffn(x_positions, y_positions, x_components_rot, y_components_rot); % no overlapping
 constraint forall(i in 1..n)(y_components_rot[i] + y_positions[i] <= h); % y component and y coordinate for rectangle i must be <= h
 constraint forall(i in 1..n)(x_components_rot[i] + x_positions[i] <= w);
-constraint y_positions[1] = 0; % the first rectangle is set in (0,0) coordinates (NOTE: the first rectangle is the one with the highest y component or the highest x component)
-constraint x_positions[1] = 0;
-constraint rotations[1] = first_rectangle_rot;
-constraint lex_lesseq([x_positions[i] | i in 1..n], [max_coord_x - x_positions[i] - x_components_rot[i] | i in 1..n]); % symmetry breaking constraint
+
 
 
 solve :: seq_search([

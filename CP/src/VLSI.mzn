@@ -23,9 +23,6 @@ constraint cumulative(x_positions, x_components, y_components, h); % cumulative
 constraint diffn(x_positions, y_positions, x_components, y_components); % no overlapping
 constraint forall(i in 1..n)(y_components[i] + y_positions[i] <= h); % y component and y coordinate for rectangle i must be <= h
 constraint forall(i in 1..n)(x_components[i] + x_positions[i] <= w);
-constraint y_positions[1] = 0; % the first rectangle is set in (0,0) coordinates (NOTE: the first rectangle is the one with the highest y component)
-constraint x_positions[1] = 0;
-constraint lex_lesseq([x_positions[i] | i in 1..n], [max_coord_x - x_positions[i] - x_components[i] | i in 1..n]); % symmetry breaking constraint
 
 
 solve :: seq_search([

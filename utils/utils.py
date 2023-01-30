@@ -93,11 +93,10 @@ def WriteInstance(instance, path=None, name='out-1'):
                                                    instance['y_positions'][i]))
 
 
-def Statistics(models, optimal_h, timeout=300):
+def Statistics(models, timeout=300):
     columns = []
     for key in list(models.keys()):
         models[key] = models[key].apply(lambda x: timeout if x=='TIMEOUT' else float(x))
-        optimal_h[key] = optimal_h[key].apply(lambda x: -1 if x=='DNF' else float(x))
     t = PrettyTable(['',] + list(models.keys()))
 
     # compute total time
@@ -135,13 +134,6 @@ def Statistics(models, optimal_h, timeout=300):
     for key in list(models.keys()):
         solved.append(str(models[key][models[key]!=timeout].count())+'/'+str(len(list(models[key]))))
     t.add_row(['Instances Solved',]+solved)
-
-    # compute the optimal h
-    optimal = []
-    h_min = optimal_h['h_min']
-    for key in list(models.keys()):
-        optimal.append(str(optimal_h[key][optimal_h[key]==h_min].count())+'/'+str(len(list(models[key]))))
-    t.add_row(['Optimal H',]+optimal)
 
     for i in list(models.keys()):
         t.align[i]='r'
