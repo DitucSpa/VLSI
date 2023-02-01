@@ -96,7 +96,7 @@ def WriteInstance(instance, path=None, name='out-1'):
 def Statistics(models, timeout=300):
     columns = []
     for key in list(models.keys()):
-        models[key] = models[key].apply(lambda x: timeout if x=='TIMEOUT' else float(x))
+        models[key] = models[key].apply(lambda x: timeout if x=='H' else float(x))
     t = PrettyTable(['',] + list(models.keys()))
 
     # compute total time
@@ -133,12 +133,13 @@ def Statistics(models, timeout=300):
     solved = []
     for key in list(models.keys()):
         solved.append(str(models[key][models[key]!=timeout].count())+'/'+str(len(list(models[key]))))
-    t.add_row(['Instances Solved',]+solved)
+    t.add_row(['Instances Solved with H optimal',]+solved)
 
     for i in list(models.keys()):
         t.align[i]='r'
 
     print('TIMEOUT is seen as 300s.\n')
+    print('Non Optimal solution has required 300s.\n')
     print(t)
 
 def PlotStats(models, x_axis, timeout=300, width_bar=0.3, figsize=(15,10)):
@@ -149,7 +150,7 @@ def PlotStats(models, x_axis, timeout=300, width_bar=0.3, figsize=(15,10)):
     ticks = np.arange(1,len(x_axis)+1)
     wid = 0
     for key in list(models.keys()):
-        models[key] = models[key].apply(lambda x: timeout if x=='TIMEOUT' else float(x))
+        models[key] = models[key].apply(lambda x: timeout if x=='N/A' else float(x))
         models[key]=[k if k!=timeout else 0 for k in list(models[key])]
         ax.bar(ticks+wid, models[key], width, label=key)
         wid += width
@@ -255,3 +256,11 @@ def highlight_min(row):
 def highlight_timeout(row):
     is_min = row == row[row==0].min()
     return ['background-color: #F08080' if v else '' for v in is_min]
+
+def highlight_h_min(row):
+    bolds = []
+    for i in range(row.shape[0]):
+        if i ==0: bolds.append('')
+        elif row[i]==row['h_min']: bolds.append('font-weight: bold')
+        else: bolds.append('')
+    return bolds
